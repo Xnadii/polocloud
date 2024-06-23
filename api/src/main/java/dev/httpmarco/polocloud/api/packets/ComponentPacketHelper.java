@@ -60,8 +60,12 @@ public final class ComponentPacketHelper {
 
     public static void writeGroup(CloudGroup group, PacketBuffer codecBuffer) {
         codecBuffer.writeString(group.name());
-        codecBuffer.writeString(group.platform().version());
-        codecBuffer.writeBoolean(group.platform().proxy());
+
+        // version writing
+        codecBuffer.writeString(group.version().platform());
+        codecBuffer.writeString(group.version().version());
+        codecBuffer.writeBoolean(group.version().proxy());
+
         codecBuffer.writeInt(group.minOnlineService());
         codecBuffer.writeInt(group.memory());
 

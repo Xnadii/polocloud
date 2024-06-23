@@ -46,7 +46,7 @@ public class RunningProxyPlatform extends RunningPlatform {
         });
 
         instance.globalEventNode().addListener(CloudServiceOnlineEvent.class, event -> {
-            if (event.cloudService().group().platform().proxy()) {
+            if (event.cloudService().group().version().proxy()) {
                 return;
             }
             registerService.accept(event.cloudService());

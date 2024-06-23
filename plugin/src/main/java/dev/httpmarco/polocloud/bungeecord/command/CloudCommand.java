@@ -140,7 +140,7 @@ public class CloudCommand extends Command implements TabExecutor {
                 final CloudGroup group = CloudAPI.instance().groupProvider().group(groupName);
 
                 player.sendMessage(TextComponent.fromLegacy(this.PREFIX + "Name§8: §b" + groupName));
-                player.sendMessage(TextComponent.fromLegacy(this.PREFIX + "Platform§8: §b" + group.platform().version()));
+                player.sendMessage(TextComponent.fromLegacy(this.PREFIX + "Platform§8: §b" + group.version()));
                 player.sendMessage(TextComponent.fromLegacy(this.PREFIX + "Memory§8: §b" + group.memory()));
                 player.sendMessage(TextComponent.fromLegacy(this.PREFIX + "Minimum online services§8: §b" + group.minOnlineService()));
                 if (group.properties() != null) {
@@ -185,7 +185,7 @@ public class CloudCommand extends Command implements TabExecutor {
                 }
 
                 player.sendMessage(TextComponent.fromLegacy(this.PREFIX + "Name§8: §b" + serviceName));
-                player.sendMessage(TextComponent.fromLegacy(this.PREFIX + "Platform§8: §b" + service.group().platform().version()));
+                player.sendMessage(TextComponent.fromLegacy(this.PREFIX + "Platform§8: §b" + service.group().version()));
                 player.sendMessage(TextComponent.fromLegacy(this.PREFIX + "Current memory§8: §b-1"));
                 player.sendMessage(TextComponent.fromLegacy(this.PREFIX + "Players§8: §b-1"));
                 player.sendMessage(TextComponent.fromLegacy(this.PREFIX + "Maximal players§8: §b" + service.maxPlayers()));

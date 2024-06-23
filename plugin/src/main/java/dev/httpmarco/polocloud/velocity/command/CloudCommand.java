@@ -122,7 +122,7 @@ public class CloudCommand implements SimpleCommand {
                 var group = CloudAPI.instance().groupProvider().group(groupName);
 
                 player.sendMessage(this.miniMessage.deserialize(this.PREFIX + "Name<dark_gray>: <aqua>" + groupName));
-                player.sendMessage(this.miniMessage.deserialize(this.PREFIX + "Platform<dark_gray>: <aqua>" + group.platform().version()));
+                player.sendMessage(this.miniMessage.deserialize(this.PREFIX + "Platform<dark_gray>: <aqua>" + group.version()));
                 player.sendMessage(this.miniMessage.deserialize(this.PREFIX + "Memory<dark_gray>: <aqua>" + group.memory()));
                 player.sendMessage(this.miniMessage.deserialize(this.PREFIX + "Minimum online services<dark_gray>: <aqua>" + group.minOnlineService()));
 
@@ -173,7 +173,7 @@ public class CloudCommand implements SimpleCommand {
                 }
 
                 player.sendMessage(this.miniMessage.deserialize(this.PREFIX + "Name<dark_gray>: <aqua>" + serviceName));
-                player.sendMessage(this.miniMessage.deserialize(this.PREFIX + "Platform<dark_gray>: <aqua>" + service.group().platform().version()));
+                player.sendMessage(this.miniMessage.deserialize(this.PREFIX + "Platform<dark_gray>: <aqua>" + service.group().version()));
                 player.sendMessage(this.miniMessage.deserialize(this.PREFIX + "Current memory<dark_gray>: <aqua>" + service.currentMemory()));
                 player.sendMessage(this.miniMessage.deserialize(this.PREFIX + "Players<dark_gray>: <aqua>" + service.onlinePlayersCount()));
                 player.sendMessage(this.miniMessage.deserialize(this.PREFIX + "Maximal players<dark_gray>: <aqua>" + service.maxPlayers()));

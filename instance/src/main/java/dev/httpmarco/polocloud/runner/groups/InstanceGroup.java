@@ -18,21 +18,16 @@ package dev.httpmarco.polocloud.runner.groups;
 
 import dev.httpmarco.osgan.networking.CommunicationProperty;
 import dev.httpmarco.polocloud.api.groups.CloudGroup;
-import dev.httpmarco.polocloud.api.groups.GroupProperties;
-import dev.httpmarco.polocloud.api.groups.platforms.PlatformVersion;
 import dev.httpmarco.polocloud.api.packets.general.OperationNumberPacket;
-import dev.httpmarco.polocloud.api.properties.PropertiesPool;
+import dev.httpmarco.polocloud.api.platform.VersionConstruct;
 import dev.httpmarco.polocloud.runner.CloudInstance;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 
 import java.util.concurrent.CompletableFuture;
 
 public class InstanceGroup extends CloudGroup {
 
-    public InstanceGroup(String name, PlatformVersion platform, int memory, int minOnlineService) {
-        super(name, platform, memory, minOnlineService);
+    public InstanceGroup(String name, VersionConstruct versionConstruct, int memory, int minOnlineService) {
+        super(name, versionConstruct, memory, minOnlineService);
     }
 
     @Override

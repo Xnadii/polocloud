@@ -18,7 +18,6 @@ package dev.httpmarco.polocloud.base.groups;
 
 import dev.httpmarco.polocloud.api.CloudAPI;
 import dev.httpmarco.polocloud.api.groups.GroupProperties;
-import dev.httpmarco.polocloud.api.groups.platforms.PlatformVersion;
 import dev.httpmarco.polocloud.api.logging.Logger;
 import dev.httpmarco.polocloud.api.properties.PropertiesPool;
 import dev.httpmarco.polocloud.api.services.CloudService;
@@ -29,10 +28,7 @@ import dev.httpmarco.polocloud.base.terminal.commands.SubCommand;
 import dev.httpmarco.polocloud.base.terminal.commands.SubCommandCompleter;
 import org.jline.reader.Candidate;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 
 @Command(command = "group", aliases = {"groups"}, description = "Manage or create your cluster groups")
 public final class GroupCommand {
@@ -44,7 +40,6 @@ public final class GroupCommand {
         logger.info("&3groups list &2- &1List all groups&2.");
         logger.info("&3groups &2<&1name&2> &2- &1Get information about a group&2.");
         logger.info("&3groups &2<&1name&2> property set &2<&1key&2> &2<&1value&2> &2- &1Add a property to a group&2.");
-        logger.info("&3groups versions &2<&1platform&2> &2- &1List all versions of a platform&2.");
         logger.info("&3groups create &2<&1name&2> &2<&1platform&2> &2<&1memory&2> &2<&1minOnlineCount&2> &2- &1Create a new group&2.");
         logger.info("&3groups delete &2<&1name&2> &2- &1Delete an existing group&2.");
         logger.info("&3groups edit &2<&1name&2> &2<&1key&2> &2<&1value&2> &2- &1Edit a value in a group&2.");
@@ -60,7 +55,7 @@ public final class GroupCommand {
         var group = CloudAPI.instance().groupProvider().group(name);
         var property = PropertiesPool.property(key);
 
-        if (property != null && property instanceof GroupProperties<?> groupProperties) {
+        if (property instanceof GroupProperties<?>) {
             group.properties().putRaw(property, property.cast(value));
             group.update();
             logger.success("You add successfully the property " + key + " with value " + value + " to group " + group.name() + "&2.");
@@ -78,9 +73,9 @@ public final class GroupCommand {
         var group = CloudAPI.instance().groupProvider().group(name);
         var property = PropertiesPool.property(key);
 
-        if (property != null && property instanceof GroupProperties<?> groupProperties) {
+        if (property instanceof GroupProperties<?> groupProperties) {
 
-            if(!group.properties().has(groupProperties)) {
+            if (!group.properties().has(groupProperties)) {
                 logger.info("The group " + group.name() + " doesnt have this property&2.");
                 return;
             }
@@ -128,7 +123,7 @@ public final class GroupCommand {
         var group = CloudAPI.instance().groupProvider().group(name);
 
         logger.info("Name&2: &3" + name);
-        logger.info("Platform&2: &3" + group.platform().version());
+        logger.info("Platform&2: &3" + group.version());
         logger.info("Memory&2: &3" + group.memory());
         logger.info("Minimum online services&2: &3" + group.minOnlineService());
         logger.info("Properties &2(&1" + group.properties().properties().size() + "&2): &3");
@@ -145,35 +140,13 @@ public final class GroupCommand {
         }
     }
 
-    @SubCommand(args = {"versions", "<platform>"})
-    public void handleVersions(String platform) {
-        List<String> versions = CloudBase.instance().groupProvider().platformService().validPlatformVersions().stream()
-                .map(PlatformVersion::version).filter(version -> version.startsWith(platform.toLowerCase() + "-")).sorted().toList();
-
-        if (versions.isEmpty()) {
-            logger.info("No versions found for platform &3" + platform + "&2!");
-            return;
-        }
-
-        logger.info(String.join(", ", versions));
-    }
-
-    @SubCommandCompleter(completionPattern = {"versions", "<platform>"})
-    public void completeVersionsMethod(int index, List<Candidate> candidates) {
-        if (index == 2) {
-            Set<String> platformNames = new HashSet<>();
-            CloudBase.instance().groupProvider().platformService().validPlatformVersions().forEach(it -> platformNames.add(it.version().split("-")[0]));
-            candidates.addAll(platformNames.stream().map(Candidate::new).toList());
-        }
-    }
-
-    @SubCommand(args = {"create", "<name>", "<platform>", "<memory>", "<minOnlineCount>"})
-    public void handleCreate(String name, String platform, int memory, int minOnlineCount) {
-        if (CloudAPI.instance().groupProvider().createGroup(name, platform, memory, minOnlineCount)) {
+    @SubCommand(args = {"create", "<name>", "<platform>", "<version>", "<memory>", "<minOnlineCount>"})
+    public void handleCreate(String name, String platform, String version, int memory, int minOnlineCount) {
+        if (CloudAPI.instance().groupProvider().createGroup(name, platform, version, memory, minOnlineCount)) {
             var group = CloudAPI.instance().groupProvider().group(name);
 
             // we must create a separate template directory
-            CloudBase.instance().templatesService().createTemplates(name, "every", (group.platform().proxy() ? "every_proxy" : "every_server"));
+            CloudBase.instance().templatesService().createTemplates(name, "every", (group.version().proxy() ? "every_proxy" : "every_server"));
             // we set as default value all important templates
             group.properties().put(GroupProperties.TEMPLATES, name);
             // send changes to other nodes or update data files
@@ -186,7 +159,9 @@ public final class GroupCommand {
     @SubCommandCompleter(completionPattern = {"create", "<name>", "<platform>", "<memory>", "<minOnlineCount>"})
     public void completeCreateMethod(int index, List<Candidate> candidates) {
         if (index == 3) {
-            candidates.addAll(((CloudGroupProvider) CloudAPI.instance().groupProvider()).platformService().validPlatformVersions().stream().map(platformVersion -> new Candidate(platformVersion.version())).toList());
+            candidates.addAll(CloudBase.instance().platformService().platforms().stream().map(it -> new Candidate(it.id())).toList());
+        } else if (index == 4) {
+            //todo find existing old args
         }
     }
 

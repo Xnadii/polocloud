@@ -27,7 +27,6 @@ import dev.httpmarco.polocloud.api.services.CloudService;
 import dev.httpmarco.polocloud.api.services.CloudServiceFactory;
 import dev.httpmarco.polocloud.api.services.ServiceState;
 import dev.httpmarco.polocloud.base.CloudBase;
-import dev.httpmarco.polocloud.base.groups.CloudGroupPlatformService;
 import dev.httpmarco.polocloud.base.groups.platforms.PaperPlatform;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
@@ -54,8 +53,9 @@ public final class CloudServiceFactoryImpl implements CloudServiceFactory {
         CloudBase.instance().templatesService().cloneTemplate(service);
 
         // download and/or copy platform file to service
-        CloudGroupPlatformService platformService = CloudBase.instance().groupProvider().platformService();
-        platformService.preparePlatform(service);
+        //todo
+        //CloudGroupPlatformService platformService = CloudBase.instance().groupProvider().platformService();
+        //  platformService.preparePlatform(service);
 
         var args = new LinkedList<>();
 
@@ -97,12 +97,11 @@ public final class CloudServiceFactoryImpl implements CloudServiceFactory {
         args.add("-Xmx" + service.memory() + "M");
 
         //todo better
-        args.addAll(Arrays.stream(platformService.find(cloudGroup.platform().version()).platformsEnvironment()).toList());
         args.add("-javaagent:../../polocloud.jar");
         args.add("-jar");
         args.add("../../polocloud.jar");
         args.add("--instance");
-        args.addAll(Arrays.stream(platformService.find(cloudGroup.platform().version()).platformsArguments()).toList());
+        args.addAll(Arrays.stream(CloudBase.instance().platformService().find(cloudGroup.version().platform()).startingArguments()).toList());
 
         var processBuilder = new ProcessBuilder().directory(service.runningFolder().toFile()).command(args.toArray(String[]::new));
 
@@ -111,10 +110,12 @@ public final class CloudServiceFactoryImpl implements CloudServiceFactory {
         //todo better
         processBuilder.environment().put("hostname", service.hostname());
         processBuilder.environment().put("port", String.valueOf(service.port()));
-        processBuilder.environment().put("appendSearchClasspath", String.valueOf(!(platformService.find(service.group().platform().version()) instanceof PaperPlatform)));
-        processBuilder.environment().put("bootstrapFile", service.group().platform().version());
+        //todo
+        //processBuilder.environment().put("appendSearchClasspath", String.valueOf(!(platformService.find(service.group().platform().version()) instanceof PaperPlatform)));
+        processBuilder.environment().put("bootstrapFile", service.group().version().toString());
         processBuilder.environment().put("serviceId", service.id().toString());
-        processBuilder.environment().put("proxySecret", CloudGroupPlatformService.PROXY_SECRET);
+        //todo
+        //processBuilder.environment().put("proxySecret", CloudGroupPlatformService.PROXY_SECRET);
 
         var pluginDirectory = service.runningFolder().resolve("plugins");
 
@@ -152,7 +153,7 @@ public final class CloudServiceFactoryImpl implements CloudServiceFactory {
         localCloudService.state(ServiceState.STOPPING);
 
         if (localCloudService.process() != null) {
-            if (localCloudService.group().platform().proxy()) {
+            if (localCloudService.group().version().proxy()) {
                 localCloudService.execute("end");
             } else {
                 localCloudService.execute("stop");

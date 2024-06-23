@@ -19,9 +19,11 @@ package dev.httpmarco.polocloud.base.groups;
 import com.google.gson.*;
 import dev.httpmarco.osgan.files.OsganFile;
 import dev.httpmarco.osgan.files.OsganFileCreateOption;
+import dev.httpmarco.polocloud.api.CloudAPI;
 import dev.httpmarco.polocloud.api.groups.CloudGroup;
 import dev.httpmarco.polocloud.api.groups.GroupProperties;
 import dev.httpmarco.polocloud.api.properties.PropertiesPool;
+import dev.httpmarco.polocloud.base.CloudBase;
 import dev.httpmarco.polocloud.base.common.PropertiesPoolSerializer;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -42,8 +44,6 @@ public final class CloudGroupServiceTypeAdapter implements JsonSerializer<CloudG
             .registerTypeAdapter(PropertiesPool.class, new PropertiesPoolSerializer())
             .registerTypeHierarchyAdapter(PropertiesPool.class, new PropertiesPoolSerializer())
             .create();
-
-    private final CloudGroupPlatformService platformService;
 
     @SneakyThrows
     public void includeFile(CloudGroup cloudGroup) {
@@ -79,12 +79,12 @@ public final class CloudGroupServiceTypeAdapter implements JsonSerializer<CloudG
         var elements = jsonElement.getAsJsonObject();
 
         var name = elements.get("name").getAsString();
-        var platform = elements.get("platform").getAsString();
+        var platform = elements.get("platform").getAsString().split("-");
         var memory = elements.get("memory").getAsInt();
         var minOnlineServices = elements.get("minOnlineCount").getAsInt();
         var properties = (PropertiesPool<GroupProperties<?>>) jsonDeserializationContext.deserialize(elements.get("properties"), PropertiesPool.class);
 
-        var parentPlatform = platformService.find(platform).possibleVersions().stream().filter(it -> it.version().equals(platform)).findFirst().orElseThrow();
+        var parentPlatform = CloudBase.instance().platformService().find(platform[0]).toConstruct(platform[1]);
 
         var group = new CloudGroupImpl(name, parentPlatform, memory, minOnlineServices);
         group.properties().appendAll(properties);
@@ -96,7 +96,7 @@ public final class CloudGroupServiceTypeAdapter implements JsonSerializer<CloudG
         var object = new JsonObject();
 
         object.addProperty("name", cloudGroup.name());
-        object.addProperty("platform", cloudGroup.platform().version());
+        object.addProperty("platform", cloudGroup.version().platform() + "-" + cloudGroup.version().version());
         object.addProperty("memory", cloudGroup.memory());
         object.addProperty("minOnlineCount", cloudGroup.minOnlineService());
 

@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package dev.httpmarco.polocloud.base.groups.platforms;
+package dev.httpmarco.polocloud.api.platform;
 
-import dev.httpmarco.polocloud.base.services.LocalCloudService;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 
-public final class PurpurPlatform extends Platform {
+@Getter
+@Accessors(fluent = true)
+@AllArgsConstructor
+public final class VersionConstruct {
 
-    public PurpurPlatform() {
-        super(false);
-    }
+    private final String platform;
+    private final String version;
+    private final boolean proxy;
 
     @Override
-    public void download(String version) {
-
-    }
-
-    @Override
-    public void prepare(LocalCloudService localCloudService) {
-
+    public String toString() {
+        return platform + "-" + version;
     }
 }

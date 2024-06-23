@@ -14,34 +14,34 @@
  * limitations under the License.
  */
 
-package dev.httpmarco.polocloud.base.groups.platforms;
+package dev.httpmarco.polocloud.base.platform;
 
-import dev.httpmarco.polocloud.api.groups.platforms.PlatformVersion;
-import dev.httpmarco.polocloud.base.services.LocalCloudService;
+import dev.httpmarco.polocloud.api.platform.VersionConstruct;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
+@AllArgsConstructor
 @Getter
 @Accessors(fluent = true)
-@RequiredArgsConstructor
-public abstract class Platform {
+public final class Platform {
 
+    private String id;
     private final boolean proxy;
-    private final Set<PlatformVersion> possibleVersions = new HashSet<>();
+    private final List<Version> versions;
+    private final String[] startingArguments;
 
-    public abstract void download(String version);
-
-    public abstract void prepare(LocalCloudService localCloudService);
-
-    public String[] platformsEnvironment() {
-        return new String[0];
+    public Platform() {
+        // default gson value if proxy property not exists
+        this.proxy = false;
+        this.versions = new ArrayList<>();
+        this.startingArguments = new String[0];
     }
 
-    public String[] platformsArguments() {
-        return new String[0];
+    public VersionConstruct toConstruct(String version) {
+        return new VersionConstruct(id, version, proxy);
     }
 }

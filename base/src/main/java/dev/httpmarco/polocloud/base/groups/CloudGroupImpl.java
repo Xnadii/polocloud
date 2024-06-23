@@ -18,20 +18,15 @@ package dev.httpmarco.polocloud.base.groups;
 
 import dev.httpmarco.polocloud.api.CloudAPI;
 import dev.httpmarco.polocloud.api.groups.CloudGroup;
-import dev.httpmarco.polocloud.api.groups.GroupProperties;
-import dev.httpmarco.polocloud.api.groups.platforms.PlatformVersion;
-import dev.httpmarco.polocloud.api.properties.PropertiesPool;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.experimental.Accessors;
+import dev.httpmarco.polocloud.api.platform.VersionConstruct;
 
 import java.io.Serializable;
 import java.util.concurrent.CompletableFuture;
 
 public class CloudGroupImpl extends CloudGroup implements Serializable {
 
-    public CloudGroupImpl(String name, PlatformVersion platform, int memory, int minOnlineService) {
-        super(name, platform, memory, minOnlineService);
+    public CloudGroupImpl(String name, VersionConstruct version, int memory, int minOnlineService) {
+        super(name, version, memory, minOnlineService);
     }
 
     @Override
@@ -41,7 +36,7 @@ public class CloudGroupImpl extends CloudGroup implements Serializable {
 
     @Override
     public String toString() {
-        return "platform='" + platform().version() + '\'' +
+        return "platform='" + version().version() + '\'' +
                 ", memory=" + memory() +
                 ", minOnlineServices=" + minOnlineService();
     }

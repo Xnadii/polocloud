@@ -149,6 +149,6 @@ public final class CloudServiceProviderImpl implements CloudServiceProvider {
     }
 
     private boolean isProxy(CloudService service) {
-        return service.group().platform().proxy();
+        return service.group().version().proxy();
     }
 }

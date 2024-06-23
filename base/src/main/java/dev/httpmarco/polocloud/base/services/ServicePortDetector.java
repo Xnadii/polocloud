@@ -32,7 +32,7 @@ public final class ServicePortDetector {
         if (group.properties().has(GroupProperties.PORT_RANGE)) {
             serverPort = group.properties().property(GroupProperties.PORT_RANGE);
         } else {
-            if (group.platform().proxy()) {
+            if (group.version().proxy()) {
                 serverPort = 25565;
             }
         }

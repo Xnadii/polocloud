@@ -17,7 +17,6 @@
 package dev.httpmarco.polocloud.base.groups.platforms;
 
 import dev.httpmarco.polocloud.api.common.YamlValidateWriter;
-import dev.httpmarco.polocloud.api.groups.platforms.PlatformVersion;
 import dev.httpmarco.polocloud.base.services.LocalCloudService;
 import dev.httpmarco.polocloud.runner.RunnerBootstrap;
 import lombok.SneakyThrows;
@@ -26,8 +25,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-public final class BungeeCordPlatform extends Platform {
+public final class BungeeCordPlatform { // extends Platform {
 
+    /*
     private static final String LATEST_BUNGEECORD = "https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar";
 
     public BungeeCordPlatform() {
@@ -65,4 +65,6 @@ public final class BungeeCordPlatform extends Platform {
             }
         });
     }
+
+     */
 }

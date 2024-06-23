@@ -29,11 +29,12 @@ import dev.httpmarco.polocloud.api.services.CloudServiceProvider;
 import dev.httpmarco.polocloud.base.common.PropertiesPoolSerializer;
 import dev.httpmarco.polocloud.base.configuration.CloudConfiguration;
 import dev.httpmarco.polocloud.base.events.GlobalEventNode;
-import dev.httpmarco.polocloud.base.groups.CloudGroupProvider;
+import dev.httpmarco.polocloud.base.groups.CloudGroupProviderImpl;
 import dev.httpmarco.polocloud.base.logging.FileLoggerHandler;
 import dev.httpmarco.polocloud.base.logging.LoggerOutPutStream;
 import dev.httpmarco.polocloud.base.node.CloudNodeService;
 import dev.httpmarco.polocloud.base.node.LocalNode;
+import dev.httpmarco.polocloud.base.platform.PlatformService;
 import dev.httpmarco.polocloud.base.player.CloudPlayerProviderImpl;
 import dev.httpmarco.polocloud.base.services.CloudServiceProviderImpl;
 import dev.httpmarco.polocloud.base.templates.TemplatesService;
@@ -49,10 +50,11 @@ import java.nio.charset.StandardCharsets;
 public final class CloudBase extends CloudAPI {
 
     private final PropertiesPool<CloudProperty<?>> globalProperties;
+    private final PlatformService platformService = new PlatformService();
 
     private final CloudTerminal terminal;
     private final NodeService nodeService;
-    private final CloudGroupProvider groupProvider;
+    private final CloudGroupProviderImpl groupProvider;
     private final CloudServiceProvider serviceProvider;
     private final TemplatesService templatesService;
     private final CloudPlayerProvider playerProvider;
@@ -92,7 +94,7 @@ public final class CloudBase extends CloudAPI {
         this.nodeService.localNode().initialize();
 
         this.globalEventNode = new GlobalEventNode();
-        this.groupProvider = new CloudGroupProvider();
+        this.groupProvider = new CloudGroupProviderImpl();
         this.templatesService = new TemplatesService();
         this.serviceProvider = new CloudServiceProviderImpl();
         this.playerProvider = new CloudPlayerProviderImpl();

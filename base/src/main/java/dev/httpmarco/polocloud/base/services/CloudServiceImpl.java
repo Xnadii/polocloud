@@ -86,7 +86,7 @@ public class CloudServiceImpl implements CloudService {
 
     @Override
     public List<CloudPlayer> onlinePlayers() {
-        return CloudAPI.instance().playerProvider().players().stream().filter(it -> (group.platform().proxy() ? it.currentProxyName() : it.currentServerName()).equalsIgnoreCase(this.name())).toList();
+        return CloudAPI.instance().playerProvider().players().stream().filter(it -> (group.version().proxy() ? it.currentProxyName() : it.currentServerName()).equalsIgnoreCase(this.name())).toList();
     }
 
     @Override

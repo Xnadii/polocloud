@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class CloudGroupProvider {
 
-    public abstract boolean createGroup(String name, String platform, int memory, int minOnlineCount);
+    public abstract boolean createGroup(String name, String platform, String version, int memory, int minOnlineCount);
 
     public abstract boolean deleteGroup(String name);
 

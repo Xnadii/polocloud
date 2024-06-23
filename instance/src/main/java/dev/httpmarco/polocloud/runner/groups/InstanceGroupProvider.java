@@ -20,9 +20,9 @@ import dev.httpmarco.osgan.networking.CommunicationProperty;
 import dev.httpmarco.osgan.networking.packet.PacketBuffer;
 import dev.httpmarco.polocloud.api.groups.CloudGroup;
 import dev.httpmarco.polocloud.api.groups.CloudGroupProvider;
-import dev.httpmarco.polocloud.api.groups.platforms.PlatformVersion;
 import dev.httpmarco.polocloud.api.packets.general.OperationStatePacket;
 import dev.httpmarco.polocloud.api.packets.groups.*;
+import dev.httpmarco.polocloud.api.platform.VersionConstruct;
 import dev.httpmarco.polocloud.runner.CloudInstance;
 import lombok.SneakyThrows;
 
@@ -34,11 +34,12 @@ public final class InstanceGroupProvider extends CloudGroupProvider {
 
     @Override
     @SneakyThrows
-    public boolean createGroup(String name, String platform, int memory, int minOnlineCount) {
+    public boolean createGroup(String name, String platform, String version, int memory, int minOnlineCount) {
         var future = new CompletableFuture<Boolean>();
         CloudInstance.instance().client().transmitter().request("group-create", new CommunicationProperty()
                         .set("name", name)
                         .set("platform", platform)
+                        .set("version", version)
                         .set("memory", memory)
                         .set("minOnlineCount", minOnlineCount)
                 , OperationStatePacket.class, it -> future.complete(it.response()));
@@ -83,10 +84,11 @@ public final class InstanceGroupProvider extends CloudGroupProvider {
     public CloudGroup fromPacket(PacketBuffer buffer) {
         var name = buffer.readString();
         var platform = buffer.readString();
-        var platformProxy = buffer.readBoolean();
+        var version = buffer.readString();
+        var proxy = buffer.readBoolean();
         var minOnlineServices = buffer.readInt();
         var memory = buffer.readInt();
 
-        return new InstanceGroup(name, new PlatformVersion(platform, platformProxy), minOnlineServices, memory);
+        return new InstanceGroup(name, new VersionConstruct(platform, version, proxy), minOnlineServices, memory);
     }
 }

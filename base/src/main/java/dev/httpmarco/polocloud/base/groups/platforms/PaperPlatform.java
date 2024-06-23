@@ -20,7 +20,6 @@ import com.google.gson.Gson;
 import dev.httpmarco.polocloud.api.CloudAPI;
 import dev.httpmarco.polocloud.api.common.YamlValidateWriter;
 import dev.httpmarco.polocloud.base.CloudBase;
-import dev.httpmarco.polocloud.base.groups.CloudGroupPlatformService;
 import dev.httpmarco.polocloud.base.services.LocalCloudService;
 import dev.httpmarco.polocloud.runner.RunnerBootstrap;
 import lombok.SneakyThrows;
@@ -36,9 +35,10 @@ public final class PaperPlatform extends PaperMCPlatform {
     private static final Gson WRITER = new Gson();
 
     public PaperPlatform() {
-        super("paper", false);
+
     }
 
+    /*
     @Override
     @SneakyThrows
     public void prepare(LocalCloudService localCloudService) {
@@ -119,5 +119,7 @@ public final class PaperPlatform extends PaperMCPlatform {
                     }
                 });
 
-    }
+
+     */
+
 }

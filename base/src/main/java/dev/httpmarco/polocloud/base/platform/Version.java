@@ -14,26 +14,19 @@
  * limitations under the License.
  */
 
-package dev.httpmarco.polocloud.base.groups.platforms;
+package dev.httpmarco.polocloud.base.platform;
 
-import dev.httpmarco.polocloud.api.groups.platforms.PlatformVersion;
-import dev.httpmarco.polocloud.base.services.LocalCloudService;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 
-public final class MinestomPlatform extends Platform {
+@Getter
+@Accessors(fluent = true)
+@AllArgsConstructor
+public final class Version {
 
-    public MinestomPlatform() {
-        super(false);
+    private final String version;
+    // platform downloading url for the jar file
+    private final String downloadUrl;
 
-        possibleVersions().add(new PlatformVersion("minestom-custom", false));
-    }
-
-    @Override
-    public void download(String version) {
-        // nothing here
-    }
-
-    @Override
-    public void prepare(LocalCloudService localCloudService) {
-
-    }
 }

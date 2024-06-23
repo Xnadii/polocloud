@@ -53,7 +53,7 @@ public final class LocalCloudService extends CloudServiceImpl {
                 orderedId,
                 id,
                 port,
-                group.platform().proxy() ? "0.0.0.0" : CloudAPI.instance().nodeService().localNode().hostname(),
+                group.version().proxy() ? "0.0.0.0" : CloudAPI.instance().nodeService().localNode().hostname(),
                 state,
                 group.memory(),
                 group.properties().has(GroupProperties.MAX_PLAYERS) ? group.properties().property(GroupProperties.MAX_PLAYERS) : 100);

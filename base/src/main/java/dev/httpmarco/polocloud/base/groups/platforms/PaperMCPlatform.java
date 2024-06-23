@@ -16,18 +16,10 @@
 
 package dev.httpmarco.polocloud.base.groups.platforms;
 
-import com.google.gson.JsonObject;
-import dev.httpmarco.osgan.files.OsganGsonContext;
-import dev.httpmarco.polocloud.api.groups.platforms.PlatformVersion;
-import lombok.SneakyThrows;
+public abstract class PaperMCPlatform {
+    // extends Platform {
 
-import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.concurrent.TimeUnit;
-
-public abstract class PaperMCPlatform extends Platform {
+    /*
     private static final String VERSION_URL = "https://api.papermc.io/v2/projects/%s";
     private static final String BUILD_URL = "https://api.papermc.io/v2/projects/%s/versions/%s/builds";
     private static final String DOWNLOAD_URL = "https://api.papermc.io/v2/projects/%s/versions/%s/builds/%d/downloads/%s-%s.jar";
@@ -50,11 +42,6 @@ public abstract class PaperMCPlatform extends Platform {
     @Override
     public String[] platformsArguments() {
         return new String[]{"nogui", "noconsole"};
-    }
-
-    @Override
-    public String[] platformsEnvironment() {
-        return new String[]{};
     }
 
     @Override
@@ -97,13 +84,5 @@ public abstract class PaperMCPlatform extends Platform {
         }
     }
 
-    @SneakyThrows
-    //todo osgan
-    private String downloadStringContext(String link) {
-        var url = new URI(link).toURL();
-        var stream = url.openStream();
-        var context = new String(stream.readAllBytes());
-        stream.close();
-        return context;
-    }
+     */
 }

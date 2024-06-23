@@ -14,11 +14,23 @@
  * limitations under the License.
  */
 
-package dev.httpmarco.polocloud.api.groups.platforms;
+package dev.httpmarco.polocloud.base.common;
 
-import lombok.experimental.Accessors;
+import com.google.gson.JsonObject;
+import dev.httpmarco.osgan.files.OsganGsonContext;
+import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
 
-@Accessors(fluent = true)
-public record PlatformVersion(String version, boolean proxy) {
+import java.net.URI;
 
+@UtilityClass
+public final class GsonDownloaderCommon {
+
+    @SneakyThrows
+    public static JsonObject downloadStringContext(String link) {
+        var stream = new URI(link).toURL().openStream();
+        var context = new String(stream.readAllBytes());
+        stream.close();
+        return OsganGsonContext.GSON.fromJson(context, JsonObject.class);
+    }
 }

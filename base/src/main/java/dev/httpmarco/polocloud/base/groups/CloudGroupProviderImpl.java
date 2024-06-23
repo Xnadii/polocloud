@@ -19,10 +19,11 @@ package dev.httpmarco.polocloud.base.groups;
 import dev.httpmarco.osgan.networking.packet.PacketBuffer;
 import dev.httpmarco.polocloud.api.CloudAPI;
 import dev.httpmarco.polocloud.api.groups.CloudGroup;
-import dev.httpmarco.polocloud.api.groups.platforms.PlatformVersion;
+import dev.httpmarco.polocloud.api.groups.CloudGroupProvider;
 import dev.httpmarco.polocloud.api.packets.general.OperationNumberPacket;
 import dev.httpmarco.polocloud.api.packets.general.OperationStatePacket;
 import dev.httpmarco.polocloud.api.packets.groups.*;
+import dev.httpmarco.polocloud.api.platform.VersionConstruct;
 import dev.httpmarco.polocloud.api.services.CloudService;
 import dev.httpmarco.polocloud.base.CloudBase;
 import lombok.Getter;
@@ -33,13 +34,12 @@ import java.util.concurrent.CompletableFuture;
 
 @Getter
 @Accessors(fluent = true)
-public final class CloudGroupProvider extends dev.httpmarco.polocloud.api.groups.CloudGroupProvider {
+public final class CloudGroupProviderImpl extends CloudGroupProvider {
 
     private final List<CloudGroup> groups;
-    private final CloudGroupPlatformService platformService = new CloudGroupPlatformService();
-    private final CloudGroupServiceTypeAdapter groupServiceTypeAdapter = new CloudGroupServiceTypeAdapter(platformService);
+    private final CloudGroupServiceTypeAdapter groupServiceTypeAdapter = new CloudGroupServiceTypeAdapter();
 
-    public CloudGroupProvider() {
+    public CloudGroupProviderImpl() {
 
         // register group packet responders
         var transmitter = CloudBase.instance().transmitter();
@@ -51,10 +51,11 @@ public final class CloudGroupProvider extends dev.httpmarco.polocloud.api.groups
         transmitter.responder("group-delete", (properties) -> new OperationStatePacket(deleteGroup(properties.getString("name"))));
         transmitter.responder("group-create", (properties) -> new OperationStatePacket(createGroup(properties.getString("name"),
                 properties.getString("platform"),
+                properties.getString("version"),
                 properties.getInteger("memory"),
                 properties.getInteger("minOnlineCount"))));
 
-        transmitter.listen(CloudGroupCreatePacket.class, (channelTransmit, packet) -> this.createGroup(packet.name(), packet.platform(), packet.memory(), packet.minOnlineCount()));
+        transmitter.listen(CloudGroupCreatePacket.class, (channelTransmit, packet) -> this.createGroup(packet.name(), packet.platform(), packet.version(), packet.memory(), packet.minOnlineCount()));
         transmitter.listen(CloudGroupDeletePacket.class, (channelTransmit, packet) -> this.deleteGroup(packet.name()));
         transmitter.listen(CloudGroupUpdatePacket.class, (channelTransmit, packet) -> this.update(packet.group()));
 
@@ -64,7 +65,7 @@ public final class CloudGroupProvider extends dev.httpmarco.polocloud.api.groups
     }
 
     @Override
-    public boolean createGroup(String name, String platformVersion, int memory, int minOnlineCount) {
+    public boolean createGroup(String name, String platform, String version, int memory, int minOnlineCount) {
         //todo remove outpoint
         if (isGroup(name)) {
             CloudAPI.instance().logger().info("The group already exists!");
@@ -76,14 +77,16 @@ public final class CloudGroupProvider extends dev.httpmarco.polocloud.api.groups
             return false;
         }
 
-        if (!platformService.isValidPlatform(platformVersion)) {
-            CloudAPI.instance().logger().info("The platform " + platformVersion + " is an invalid type!");
+        var platformService = CloudBase.instance().platformService();
+
+        if (!platformService.validPlatform(platform)) {
+            CloudAPI.instance().logger().info("The platform " + platform + " is an invalid type!");
             return false;
         }
 
-        var platform = platformService.find(platformVersion);
+        var versionConstruct = platformService.find(platform).toConstruct(version);
 
-        var group = new CloudGroupImpl(name, new PlatformVersion(platformVersion, platform.proxy()), memory, minOnlineCount);
+        var group = new CloudGroupImpl(name, versionConstruct, memory, minOnlineCount);
         this.groupServiceTypeAdapter.includeFile(group);
         this.groups.add(group);
 
@@ -134,11 +137,15 @@ public final class CloudGroupProvider extends dev.httpmarco.polocloud.api.groups
 
     public CloudGroup fromPacket(PacketBuffer buffer) {
         var name = buffer.readString();
+
         var platform = buffer.readString();
+        var version = buffer.readString();
+        var proxy = buffer.readBoolean();
+
         var platformProxy = buffer.readBoolean();
         var minOnlineServices = buffer.readInt();
         var memory = buffer.readInt();
 
-        return new CloudGroupImpl(name, new PlatformVersion(platform, platformProxy), minOnlineServices, memory);
+        return new CloudGroupImpl(name, new VersionConstruct(platform, version, proxy), minOnlineServices, memory);
     }
 }

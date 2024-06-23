@@ -29,6 +29,7 @@ public final class CloudGroupCreatePacket extends Packet {
 
     private String name;
     private String platform;
+    private String version;
     private int memory;
     private int minOnlineCount;
 
@@ -36,6 +37,7 @@ public final class CloudGroupCreatePacket extends Packet {
     public void read(PacketBuffer packetBuffer) {
         this.name = packetBuffer.readString();
         this.platform = packetBuffer.readString();
+        this.version = packetBuffer.readString();
         this.memory = packetBuffer.readInt();
         this.minOnlineCount = packetBuffer.readInt();
     }
@@ -44,6 +46,7 @@ public final class CloudGroupCreatePacket extends Packet {
     public void write(PacketBuffer packetBuffer) {
         packetBuffer.writeString(name);
         packetBuffer.writeString(platform);
+        packetBuffer.writeString(version);
         packetBuffer.writeInt(memory);
         packetBuffer.writeInt(minOnlineCount);
     }
