@@ -28,18 +28,6 @@
         {
           "version": "3.3.0-SNAPSHOT",
           "downloadUrl": "https://api.papermc.io/v2/projects/velocity/versions/3.3.0-SNAPSHOT/builds/400/downloads/velocity-3.3.0-SNAPSHOT-400.jar"
-        },
-        {
-          "version": "3.2.0-SNAPSHOT",
-          "downloadUrl": "https://api.papermc.io/v2/projects/velocity/versions/3.2.0-SNAPSHOT/builds/296/downloads/velocity-3.2.0-SNAPSHOT-296.jar"
-        },
-        {
-          "version": "3.1.2-SNAPSHOT",
-          "downloadUrl": "https://api.papermc.io/v2/projects/velocity/versions/3.1.2-SNAPSHOT/builds/207/downloads/velocity-3.1.2-SNAPSHOT-207.jar"
-        },
-        {
-          "version": "3.1.1-SNAPSHOT",
-          "downloadUrl": "https://api.papermc.io/v2/projects/velocity/versions/3.1.1-SNAPSHOT/builds/97/downloads/velocity-3.1.1-SNAPSHOT-97.jar"
         }
       ]
     },
