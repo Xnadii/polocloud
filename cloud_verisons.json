@@ -102,6 +102,26 @@
         {
           "version": "1.21",
           "downloadUrl": "https://api.papermc.io/v2/projects/paper/versions/1.21/builds/37/downloads/paper-1.21-37.jar"
+        },
+        {
+          "version": "1.20.6",
+          "downloadUrl": "https://api.papermc.io/v2/projects/paper/versions/1.20.6/builds/147/downloads/paper-1.20.6-147.jar"
+        },
+        {
+          "version": "1.20.4",
+          "downloadUrl": "https://api.papermc.io/v2/projects/paper/versions/1.20.4/builds/497/downloads/paper-1.20.4-497.jar"
+        },
+        {
+          "version": "1.20.2",
+          "downloadUrl": "https://api.papermc.io/v2/projects/paper/versions/1.20.2/builds/318/downloads/paper-1.20.2-318.jar"
+        },
+        {
+          "version": "1.20.1",
+          "downloadUrl": "https://api.papermc.io/v2/projects/paper/versions/1.20.1/builds/196/downloads/paper-1.20.1-196.jar"
+        },
+        {
+          "version": "1.20",
+          "downloadUrl": "https://api.papermc.io/v2/projects/paper/versions/1.20/builds/17/downloads/paper-1.20-17.jar"
         }
       ]
     }
