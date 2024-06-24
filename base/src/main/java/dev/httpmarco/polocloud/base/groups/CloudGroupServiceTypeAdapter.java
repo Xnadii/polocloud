@@ -79,7 +79,7 @@ public final class CloudGroupServiceTypeAdapter implements JsonSerializer<CloudG
         var elements = jsonElement.getAsJsonObject();
 
         var name = elements.get("name").getAsString();
-        var platform = elements.get("platform").getAsString().split("-");
+        var platform = elements.get("platform").getAsString().split("-", 2);
         var memory = elements.get("memory").getAsInt();
         var minOnlineServices = elements.get("minOnlineCount").getAsInt();
         var properties = (PropertiesPool<GroupProperties<?>>) jsonDeserializationContext.deserialize(elements.get("properties"), PropertiesPool.class);
@@ -96,7 +96,7 @@ public final class CloudGroupServiceTypeAdapter implements JsonSerializer<CloudG
         var object = new JsonObject();
 
         object.addProperty("name", cloudGroup.name());
-        object.addProperty("platform", cloudGroup.version().platform() + "-" + cloudGroup.version().version());
+        object.addProperty("platform", cloudGroup.version().toString());
         object.addProperty("memory", cloudGroup.memory());
         object.addProperty("minOnlineCount", cloudGroup.minOnlineService());
 

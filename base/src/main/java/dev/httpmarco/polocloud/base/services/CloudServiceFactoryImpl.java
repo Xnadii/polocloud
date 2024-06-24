@@ -27,7 +27,7 @@ import dev.httpmarco.polocloud.api.services.CloudService;
 import dev.httpmarco.polocloud.api.services.CloudServiceFactory;
 import dev.httpmarco.polocloud.api.services.ServiceState;
 import dev.httpmarco.polocloud.base.CloudBase;
-import dev.httpmarco.polocloud.base.groups.platforms.PaperPlatform;
+import dev.httpmarco.polocloud.base.platform.PlatformService;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
@@ -49,13 +49,8 @@ public final class CloudServiceFactoryImpl implements CloudServiceFactory {
         ((CloudServiceProviderImpl) CloudAPI.instance().serviceProvider()).registerService(service);
 
         CloudAPI.instance().logger().info("The Service &2'&4" + service.name() + "&2' &1is starting now on node &2'&4" + CloudAPI.instance().nodeService().localNode().name() + "&2'");
-
         CloudBase.instance().templatesService().cloneTemplate(service);
-
-        // download and/or copy platform file to service
-        //todo
-        //CloudGroupPlatformService platformService = CloudBase.instance().groupProvider().platformService();
-        //  platformService.preparePlatform(service);
+        CloudBase.instance().platformService().preparePlatform(service);
 
         var args = new LinkedList<>();
 
@@ -107,15 +102,12 @@ public final class CloudServiceFactoryImpl implements CloudServiceFactory {
 
         processBuilder.redirectError(new File("polo"));
 
-        //todo better
         processBuilder.environment().put("hostname", service.hostname());
         processBuilder.environment().put("port", String.valueOf(service.port()));
-        //todo
-        //processBuilder.environment().put("appendSearchClasspath", String.valueOf(!(platformService.find(service.group().platform().version()) instanceof PaperPlatform)));
+        processBuilder.environment().put("appendSearchClasspath", String.valueOf(!service.group().version().platform().equals("paper")));
         processBuilder.environment().put("bootstrapFile", service.group().version().toString());
         processBuilder.environment().put("serviceId", service.id().toString());
-        //todo
-        //processBuilder.environment().put("proxySecret", CloudGroupPlatformService.PROXY_SECRET);
+        processBuilder.environment().put("proxySecret", PlatformService.PROXY_SECRET);
 
         var pluginDirectory = service.runningFolder().resolve("plugins");
 

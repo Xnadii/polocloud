@@ -20,6 +20,8 @@ import dev.httpmarco.polocloud.api.platform.VersionConstruct;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ public final class Platform {
     private String id;
     private final boolean proxy;
     private final List<Version> versions;
+    private final PlatformConfigManipulation[] configManipulation;
     private final String[] startingArguments;
 
     public Platform() {
@@ -39,9 +42,11 @@ public final class Platform {
         this.proxy = false;
         this.versions = new ArrayList<>();
         this.startingArguments = new String[0];
+        this.configManipulation = new PlatformConfigManipulation[0];
     }
 
-    public VersionConstruct toConstruct(String version) {
+    @Contract("_ -> new")
+    public @NotNull VersionConstruct toConstruct(String version) {
         return new VersionConstruct(id, version, proxy);
     }
 }
