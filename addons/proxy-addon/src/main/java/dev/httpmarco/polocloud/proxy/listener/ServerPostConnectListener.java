@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-dependencies {
-    implementation(project(":api"))
-    implementation(project(":instance"))
-    implementation(libs.osgan.netty)
+package dev.httpmarco.polocloud.proxy.listener;
 
-    implementation(libs.paper)
-    implementation(libs.bungeecord)
+import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.player.ServerPostConnectEvent;
+import dev.httpmarco.polocloud.proxy.VelocityPlatformPlugin;
+import lombok.AllArgsConstructor;
 
-    implementation(libs.velocity)
-    annotationProcessor(libs.velocity)
+@AllArgsConstructor
+public class ServerPostConnectListener {
 
-    implementation(libs.bungeeminimessage)
-}
+    private final VelocityPlatformPlugin platform;
 
-tasks.jar {
-    archiveFileName.set("plugin.jar")
+    @Subscribe
+    public void onPost(ServerPostConnectEvent event) {
+        this.platform.getTabManager().addPlayer(event.getPlayer());
+    }
+
+
 }

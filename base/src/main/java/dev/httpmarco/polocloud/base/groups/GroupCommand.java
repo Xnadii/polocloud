@@ -28,6 +28,7 @@ import dev.httpmarco.polocloud.base.terminal.commands.SubCommand;
 import dev.httpmarco.polocloud.base.terminal.commands.SubCommandCompleter;
 import org.jline.reader.Candidate;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Command(command = "group", aliases = {"groups"}, description = "Manage or create your cluster groups")
@@ -39,7 +40,7 @@ public final class GroupCommand {
     public void handle() {
         logger.info("&3groups list &2- &1List all groups&2.");
         logger.info("&3groups &2<&1name&2> &2- &1Get information about a group&2.");
-        logger.info("&3groups &2<&1name&2> property set &2<&1key&2> &2<&1value&2> &2- &1Add a property to a group&2.");
+        logger.info("&3groups &2<&1name&2> &3property set &2<&1key&2> &2<&1value&2> &2- &1Add a property to a group&2.");
         logger.info("&3groups create &2<&1name&2> &2<&1platform&2> &2<&1memory&2> &2<&1minOnlineCount&2> &2- &1Create a new group&2.");
         logger.info("&3groups delete &2<&1name&2> &2- &1Delete an existing group&2.");
         logger.info("&3groups edit &2<&1name&2> &2<&1key&2> &2<&1value&2> &2- &1Edit a value in a group&2.");
@@ -62,6 +63,11 @@ public final class GroupCommand {
         } else {
             logger.info("This property does not exists&2!");
         }
+    }
+
+    @SubCommandCompleter(completionPattern = {"<name>", "property", "set", "<key>", "<value>"})
+    public void completePropertySet(int index, List<Candidate> candidates) {
+        this.completeProperty(index, candidates);
     }
 
     @SubCommand(args = {"<name>", "property", "remove", "<key>"})
@@ -88,23 +94,9 @@ public final class GroupCommand {
         }
     }
 
-    // todo: duplicated code
     @SubCommandCompleter(completionPattern = {"<name>", "property", "remove", "<key>"})
     public void completePropertyRemove(int index, List<Candidate> candidates) {
-        if (index == 1) {
-            candidates.addAll(CloudAPI.instance().groupProvider().groups().stream().map(it -> new Candidate(it.name())).toList());
-        } else if (index == 4) {
-            candidates.addAll(PropertiesPool.PROPERTY_LIST.stream().filter(it -> it instanceof GroupProperties<?>).map(property -> new Candidate(property.id())).toList());
-        }
-    }
-
-    @SubCommandCompleter(completionPattern = {"<name>", "property", "set", "<key>", "<value>"})
-    public void completePropertySet(int index, List<Candidate> candidates) {
-        if (index == 1) {
-            candidates.addAll(CloudAPI.instance().groupProvider().groups().stream().map(it -> new Candidate(it.name())).toList());
-        } else if (index == 4) {
-            candidates.addAll(PropertiesPool.PROPERTY_LIST.stream().filter(it -> it instanceof GroupProperties<?>).map(property -> new Candidate(property.id())).toList());
-        }
+        this.completeProperty(index, candidates);
     }
 
     @SubCommand(args = {"list"})
@@ -201,6 +193,16 @@ public final class GroupCommand {
     public void completeShutdownMethod(int index, List<Candidate> candidates) {
         if (index == 2) {
             candidates.addAll(CloudAPI.instance().groupProvider().groups().stream().map(it -> new Candidate(it.name())).toList());
+        }
+    }
+
+    private void completeProperty(int index, List<Candidate> candidates) {
+        if (index == 1) {
+            candidates.addAll(CloudAPI.instance().groupProvider().groups().stream().map(it -> new Candidate(it.name())).toList());
+        } else if (index == 4) {
+            candidates.addAll(PropertiesPool.PROPERTY_LIST.stream().filter(it -> it instanceof GroupProperties<?>).map(property -> new Candidate(property.id())).toList());
+        } else if (index == 5) {
+            candidates.addAll(Arrays.asList(new Candidate("true"), new Candidate("false")));
         }
     }
 

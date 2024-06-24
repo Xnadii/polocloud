@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-dependencies {
-    implementation(project(":api"))
-    implementation(project(":instance"))
-    implementation(libs.osgan.netty)
+package dev.httpmarco.polocloud.proxy.tablist;
 
-    implementation(libs.paper)
-    implementation(libs.bungeecord)
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-    implementation(libs.velocity)
-    annotationProcessor(libs.velocity)
+@Getter
+@AllArgsConstructor
+public class Tablist {
 
-    implementation(libs.bungeeminimessage)
-}
+    private String header;
+    private String footer;
 
-tasks.jar {
-    archiveFileName.set("plugin.jar")
 }

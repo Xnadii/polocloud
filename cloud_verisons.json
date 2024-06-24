@@ -34,11 +34,62 @@
     {
       "id": "bungeecord",
       "proxy": true,
-      "configManipulation": [],
+      "configManipulation": [
+          {
+          "file": "config.yml",
+          "actions": [
+            {
+              "type": "OVERWRITE",
+              "keyword": "  host",
+              "content": "%hostname%:%port%"
+            }
+          ]
+        }
+      ],
       "versions": [
         {
           "version": "latest",
           "downloadUrl": "https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar"
+        }
+      ]
+    },
+    {
+      "id": "paper",
+      "configManipulation": [
+          {
+          "file": "server.properties",
+          "actions": [
+            {
+              "type": "OVERWRITE",
+              "keyword": "online-mode",
+              "content": "false"
+            },
+             {
+              "type": "OVERWRITE",
+              "keyword": "server-name",
+              "content": "%server_name%"
+            },
+             {
+              "type": "OVERWRITE",
+              "keyword": "server-port",
+              "content": "%port%"
+            }
+          ]
+        },
+        {
+          "file": "eula.txt",
+          "actions": [
+            {
+              "type": "GENERATE_AND_FILL_FILE",
+              "content": "eula=true"
+            }
+          ]
+        }
+      ],
+      "versions": [
+        {
+          "version": "1.21",
+          "downloadUrl": "https://api.papermc.io/v2/projects/paper/versions/1.21/builds/37/downloads/paper-1.21-37.jar"
         }
       ]
     }
