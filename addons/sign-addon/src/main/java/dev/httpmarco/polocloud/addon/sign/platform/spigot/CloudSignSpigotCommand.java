@@ -18,6 +18,7 @@ package dev.httpmarco.polocloud.addon.sign.platform.spigot;
 
 import dev.httpmarco.polocloud.addon.sign.CloudSignService;
 import dev.httpmarco.polocloud.api.CloudAPI;
+import org.bukkit.Material;
 import org.bukkit.block.data.type.WallSign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class CloudSignSpigotCommand implements CommandExecutor {
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         var player = (Player) commandSender;
@@ -46,7 +48,7 @@ public final class CloudSignSpigotCommand implements CommandExecutor {
                 return false;
             }
 
-            if (!possibleSignBlock.getType().data.equals(WallSign.class)) {
+            if (!possibleSignBlock.getType().data.equals(WallSign.class) && !possibleSignBlock.getType().equals(Material.LEGACY_SIGN_POST)) {
                 player.sendMessage("The detected block is not a wall sign");
                 return false;
             }
@@ -70,7 +72,7 @@ public final class CloudSignSpigotCommand implements CommandExecutor {
                 return false;
             }
 
-            if (!possibleSignBlock.getType().data.equals(WallSign.class)) {
+            if (!possibleSignBlock.getType().data.equals(WallSign.class) && !possibleSignBlock.getType().equals(Material.LEGACY_SIGN_POST)) {
                 player.sendMessage("The detected block is not a wall sign");
                 return false;
             }

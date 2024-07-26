@@ -17,6 +17,8 @@
 package dev.httpmarco.polocloud.addon.sign.platform.spigot;
 
 import dev.httpmarco.polocloud.addon.sign.CloudSignService;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.WallSign;
@@ -28,11 +30,16 @@ import org.jetbrains.annotations.NotNull;
 
 public final class CloudSignSpigotBootstrap extends JavaPlugin implements Listener {
 
+    @Getter
+    @Accessors(fluent = true)
+    private CloudSignSpigotBootstrap plugin;
     private CloudSignService signService;
 
     @Override
     public void onEnable() {
+        this.plugin = this;
         signService = new CloudSignService(new CloudSignSpigotFactory());
+        CloudSignSpigotVersion.detectSpigotVersion(this);
 
         getCommand("cloudsign").setExecutor(new CloudSignSpigotCommand());
 
@@ -48,4 +55,5 @@ public final class CloudSignSpigotBootstrap extends JavaPlugin implements Listen
             signService.connectPlayer(block.getWorld().getName(), block.getX(), block.getY(), block.getZ(), event.getPlayer().getUniqueId());
         }
     }
+
 }
