@@ -19,9 +19,6 @@ package dev.httpmarco.polocloud.addon.sign.platform.spigot;
 import dev.httpmarco.polocloud.addon.sign.CloudSign;
 import dev.httpmarco.polocloud.addon.sign.CloudSignFactory;
 import dev.httpmarco.polocloud.addon.sign.CloudSignService;
-import dev.httpmarco.polocloud.api.CloudAPI;
-import dev.httpmarco.polocloud.api.services.CloudService;
-import dev.httpmarco.polocloud.runner.CloudInstance;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -39,9 +36,13 @@ public final class CloudSignSpigotFactory extends CloudSignFactory {
         var block = pos.getBlock();
         var sign = (Sign) block.getState();
 
-        //block editing of sign
-        sign.setWaxed(true);
-        sign.update(true, false);
+        if (CloudSignSpigotVersion.BASE_VERSION_INTEGER >= 20) {
+            //block editing of sign
+            sign.setWaxed(true);
+            sign.update(true, false);
+        } else {
+            sign.update();
+        }
     }
 
     @Override
@@ -57,12 +58,21 @@ public final class CloudSignSpigotFactory extends CloudSignFactory {
             var line = layout.lines()[i];
             if (cloudSign.cloudService() != null) {
                 line = line.replaceAll("%server%", cloudSign.cloudService().name())
-                        .replaceAll("%players%", String.valueOf(cloudSign.cloudService().onlinePlayersCount()));
+                    .replaceAll("%players%", String.valueOf(cloudSign.cloudService().onlinePlayersCount()));
             }
 
-            sign.getSide(Side.FRONT).line(i, Component.text(line));
+            if (CloudSignSpigotVersion.BASE_VERSION_INTEGER >= 20) {
+                sign.getSide(Side.FRONT).line(i, Component.text(line));
+            } else {
+                sign.setLine(i, line);
+            }
         }
-        sign.update(true, false);
+
+        if (CloudSignSpigotVersion.BASE_VERSION_INTEGER >= 20) {
+            sign.update(true, false);
+        } else {
+            sign.update();
+        }
     }
 
     @Override

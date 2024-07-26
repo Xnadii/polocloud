@@ -17,11 +17,8 @@
 package dev.httpmarco.polocloud.addon.sign.platform.spigot;
 
 import dev.httpmarco.polocloud.addon.sign.CloudSignService;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.type.WallSign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -30,29 +27,27 @@ import org.jetbrains.annotations.NotNull;
 
 public final class CloudSignSpigotBootstrap extends JavaPlugin implements Listener {
 
-    @Getter
-    @Accessors(fluent = true)
-    private CloudSignSpigotBootstrap plugin;
     private CloudSignService signService;
+    private CloudSignSpigotUtils cloudSignSpigotUtils;
 
     @Override
     public void onEnable() {
-        this.plugin = this;
-        signService = new CloudSignService(new CloudSignSpigotFactory());
+        this.signService = new CloudSignService(new CloudSignSpigotFactory());
+        this.cloudSignSpigotUtils = new CloudSignSpigotUtils(this);
         CloudSignSpigotVersion.detectSpigotVersion(this);
 
-        getCommand("cloudsign").setExecutor(new CloudSignSpigotCommand());
+        getCommand("cloudsign").setExecutor(new CloudSignSpigotCommand(this.cloudSignSpigotUtils));
 
         Bukkit.getPluginManager().registerEvents(this, this);
-        Bukkit.getScheduler().runTaskTimer(this, signService::tick, 1, 0);
+        Bukkit.getScheduler().runTaskTimer(this, this.signService::tick, 1, 0);
     }
 
     @EventHandler
     public void handle(@NotNull PlayerInteractEvent event) {
-        Block block = event.getClickedBlock();
+        final Block block = event.getClickedBlock();
 
-        if (block != null && block.getType().data.equals(WallSign.class)) {
-            signService.connectPlayer(block.getWorld().getName(), block.getX(), block.getY(), block.getZ(), event.getPlayer().getUniqueId());
+        if (block != null && !this.cloudSignSpigotUtils.notASign(block)) {
+            this.signService.connectPlayer(block.getWorld().getName(), block.getX(), block.getY(), block.getZ(), event.getPlayer().getUniqueId());
         }
     }
 

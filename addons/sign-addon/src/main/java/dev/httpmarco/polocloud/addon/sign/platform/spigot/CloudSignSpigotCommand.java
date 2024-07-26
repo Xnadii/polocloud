@@ -18,8 +18,6 @@ package dev.httpmarco.polocloud.addon.sign.platform.spigot;
 
 import dev.httpmarco.polocloud.addon.sign.CloudSignService;
 import dev.httpmarco.polocloud.api.CloudAPI;
-import org.bukkit.Material;
-import org.bukkit.block.data.type.WallSign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,7 +26,12 @@ import org.jetbrains.annotations.NotNull;
 
 public final class CloudSignSpigotCommand implements CommandExecutor {
 
-    @SuppressWarnings("deprecation")
+    private final CloudSignSpigotUtils cloudSignSpigotUtils;
+
+    public CloudSignSpigotCommand(CloudSignSpigotUtils cloudSignSpigotUtils) {
+        this.cloudSignSpigotUtils = cloudSignSpigotUtils;
+    }
+
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         var player = (Player) commandSender;
@@ -41,14 +44,14 @@ public final class CloudSignSpigotCommand implements CommandExecutor {
                 return false;
             }
 
-            var possibleSignBlock = player.getTargetBlockExact(8);
+            var possibleSignBlock = this.cloudSignSpigotUtils.getTargetBlock(player);
 
             if (possibleSignBlock == null) {
                 player.sendMessage("You must look at a wall sign block");
                 return false;
             }
 
-            if (!possibleSignBlock.getType().data.equals(WallSign.class) && !possibleSignBlock.getType().equals(Material.LEGACY_SIGN_POST)) {
+            if (this.cloudSignSpigotUtils.notASign(possibleSignBlock)) {
                 player.sendMessage("The detected block is not a wall sign");
                 return false;
             }
@@ -64,15 +67,14 @@ public final class CloudSignSpigotCommand implements CommandExecutor {
         }
 
         if (args.length == 1 && args[0].equals("remove")) {
-            var possibleSignBlock = player.getTargetBlockExact(8);
-
+            var possibleSignBlock = this.cloudSignSpigotUtils.getTargetBlock(player);
 
             if (possibleSignBlock == null) {
                 player.sendMessage("You must look at a wall sign block");
                 return false;
             }
 
-            if (!possibleSignBlock.getType().data.equals(WallSign.class) && !possibleSignBlock.getType().equals(Material.LEGACY_SIGN_POST)) {
+            if (this.cloudSignSpigotUtils.notASign(possibleSignBlock)) {
                 player.sendMessage("The detected block is not a wall sign");
                 return false;
             }
@@ -86,4 +88,5 @@ public final class CloudSignSpigotCommand implements CommandExecutor {
         player.sendMessage("cloudsign remove");
         return false;
     }
+
 }
